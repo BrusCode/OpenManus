@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  openmanus:
+    build:
+      context: .
+      dockerfile: Dockerfile.easypanel
+    container_name: openmanus
+    restart: unless-stopped
+    
+    # Variáveis de ambiente
+    environment:
+      # LLM Configuration
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_MAX_TOKENS=${LLM_MAX_TOKENS:-4096}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE:-0.0}
+      
+      # Vision Model (opcional)
+      - LLM_VISION_MODEL=${LLM_VISION_MODEL:-gpt-4o}
+      - LLM_VISION_API_KEY=${LLM_VISION_API_KEY}
+      
+      # Browser Configuration
+      - BROWSER_HEADLESS=${BROWSER_HEADLESS:-true}
+      - BROWSER_DISABLE_SECURITY=${BROWSER_DISABLE_SECURITY:-true}
+      
+      # Search Configuration
+      - SEARCH_ENGINE=${SEARCH_ENGINE:-Google}
+      - SEARCH_LANG=${SEARCH_LANG:-en}
+      - SEARCH_COUNTRY=${SEARCH_COUNTRY:-us}
+      
+      # Sandbox Configuration
+      - SANDBOX_USE=${SANDBOX_USE:-false}
+      - SANDBOX_IMAGE=${SANDBOX_IMAGE:-python:3.12-slim}
+      - SANDBOX_MEMORY_LIMIT=${SANDBOX_MEMORY_LIMIT:-1g}
+      - SANDBOX_CPU_LIMIT=${SANDBOX_CPU_LIMIT:-2.0}
+      
+      # RunFlow Configuration
+      - RUNFLOW_USE_DATA_ANALYSIS=${RUNFLOW_USE_DATA_ANALYSIS:-false}
+    
+    # Volumes para persistência
+    volumes:
+      - ./workspace:/app/workspace
+      - ./config:/app/config
+      - ./logs:/app/logs
+    
+    # Limites de recursos
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Comando - pode ser alterado conforme necessidade
+    # command: python main.py --prompt "Sua tarefa aqui"
+    # command: python run_flow.py
+    # command: python run_mcp.py
+    stdin_open: true
+    tty: true
