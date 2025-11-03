@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxdamage1 \
     libxi6 \
     libxtst6 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-2.0-0 \
     # Fontes (nomes atualizados para Debian Trixie)
     fonts-liberation \
     fonts-noto-color-emoji \
