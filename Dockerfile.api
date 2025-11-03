@@ -39,6 +39,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libasound2 \
     libatspi2.0-0 \
     libxshmfence1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxi6 \
+    libxtst6 \
+    libgdk-pixbuf2.0-0 \
+    # Fontes (nomes atualizados para Debian Trixie)
+    fonts-liberation \
+    fonts-noto-color-emoji \
+    fonts-unifont \
     # Dependências adicionais
     && rm -rf /var/lib/apt/lists/*
 
@@ -51,9 +65,11 @@ COPY requirements.txt .
 # Instalar dependências Python
 RUN uv pip install --system -r requirements.txt
 
-# Instalar Playwright browsers
-RUN playwright install chromium && \
-    playwright install-deps chromium
+# Instalar Playwright browsers (apenas Chromium)
+# Usar --with-deps para instalar dependências automaticamente
+RUN playwright install --with-deps chromium || \
+    (echo "Fallback: Installing Chromium without system deps" && \
+     playwright install chromium)
 
 # Copiar scripts de configuração
 COPY generate_config.py .
